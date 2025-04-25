@@ -1,0 +1,10 @@
+empId , EmpName, EmpJoiningDate , DeptId , Con tac t , S al a ry , M a ri t al S t a t u s
+001 , Imran , 15/07/2012, 1 , 03331222567, 78000, Married
+002 , Saleem , 15/07/2012, 1 , 03331233567, 160000, Married
+003 , Aziz , 15/10/2011, 1 , 03331234557, 74000, Married
+004 , Jem Morison , 15/08/2012, 5 , 03331244567, 78000, Married
+005 , Junaid , 15/07/2013, 3 , 03331234568, 79000, Married
+006 , Jamshed , 15/01/2013, 4 , 03001234568, 45000, Si n gl e
+007 , Asim , 01/01/2011, 1 , 03211234568, 69000, Si n gl e
+008 , J ave ri a , 02/07/2010, 2 , 03003001234, 145000, Si n gl e
+009 , Zara , 02/01/2011, 4 , 03010234568, 79000, Si n gl e
