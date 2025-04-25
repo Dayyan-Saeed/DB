@@ -1,0 +1,16 @@
+For Practice Purpose apply the following commands in the given file :
+
+DDL:
+
+Create
+Modift, change, Add, Drop
+Rename
+Drop
+Truncate
+Comment single line and multi line
+
+DML:
+Insert
+Update
+Select(equal to, not equal to, like, not like, and , or, in and between
+Delete

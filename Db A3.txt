@@ -1,0 +1,208 @@
+use company;
+
+#a)
+SELECT *
+FROM EMPLOYEE
+WHERE Dno = 4;
+
+
+#b) To find the details of employees who earn more than $30,000, you can use the following query:
+
+SELECT *
+FROM EMPLOYEE
+WHERE Salary > 30000;
+
+#c) To find the details of employees who either work for department #4 and earn more than $25,000 or work for department #5 and earn more than $30,000, you can use the following query:
+
+
+SELECT *
+FROM EMPLOYEE
+WHERE (Dno = 4 AND Salary > 25000) OR (Dno = 5 AND Salary > 30000);
+
+#d) To find the first name, last name, and salaries of all the employees, you can use the following query:
+
+SELECT Fname, Lname, Salary
+FROM EMPLOYEE;
+
+#e) To find the combinations of sex and salary in the Employees table, you can use the following query:
+
+SELECT Sex, Salary
+FROM EMPLOYEE;
+
+#f) To find the names and salaries of the employees working for department #5, you can use the following query:
+
+SELECT Fname, Lname, Salary
+FROM EMPLOYEE
+WHERE Dno = 5;
+
+#g) To find the SSN of the employees who either work for department #5 or supervise someone who works for department #5, you can use the following query:
+
+SELECT DISTINCT E.Ssn
+FROM EMPLOYEE E
+LEFT JOIN EMPLOYEE S ON E.Ssn = S.Super_ssn
+WHERE E.Dno = 5 OR S.Dno = 5;
+
+#h) To find the SSN of the employees who work for department #5 and also supervise someone who works for department #5, you can use the following query:
+
+SELECT E.Ssn
+FROM EMPLOYEE E
+JOIN EMPLOYEE S ON E.Ssn = S.Super_ssn
+WHERE E.Dno = 5 AND S.Dno = 5;
+
+-- i) To find the SSN of the employees who do not work for department #5 but supervise someone who works for department #5, you can use the following query:
+
+
+SELECT DISTINCT E.Ssn
+FROM EMPLOYEE E
+JOIN EMPLOYEE S ON E.Ssn = S.Super_ssn
+WHERE E.Dno != 5 AND S.Dno = 5;
+
+-- j) To find the names of the female employees along with the names of their dependents, you can use the following query:
+
+
+SELECT E.Fname AS Employee_FirstName, E.Lname AS Employee_LastName, D.Dependent_name
+FROM EMPLOYEE E
+JOIN DEPENDENT D ON E.Ssn = D.Essn
+WHERE E.Sex = 'F';
+
+-- k) To list the names of the department managers, you can use the following query:
+
+
+SELECT E.Fname AS Manager_FirstName, E.Lname AS Manager_LastName
+FROM EMPLOYEE E
+JOIN DEPARTMENT D ON E.Ssn = D.Mgr_ssn;
+-- l) To list the names of the projects along with the names of the departments under which they are run, you can use the following query:
+
+
+SELECT P.Pname AS Project_Name, D.Dname AS Department_Name
+FROM PROJECT P
+JOIN DEPARTMENT D ON P.Dnum = D.Dnumber;
+
+-- m) To list the names of the employees who are working on any project not being run by their department (nested query), you can use the following query:
+
+
+SELECT E.Fname, E.Lname
+FROM EMPLOYEE E
+WHERE E.Dno NOT IN (
+    SELECT P.Dnum
+    FROM PROJECT P
+    WHERE P.Pnumber = E.Pno
+);
+-- n) To list the names, gender, and salaries of the employees who are supervised by Jennifer Wallace (nested query), you can use the following query:
+
+
+SELECT E.Fname, E.Lname, E.Sex, E.Salary
+FROM EMPLOYEE E
+WHERE E.Super_ssn = (
+    SELECT S.Ssn
+    FROM EMPLOYEE S
+    WHERE S.Fname = 'Jennifer' AND S.Lname = 'Wallace'
+);
+-- o) To list the name of the employees who manage a department which has an office in Houston (nested query), you can use the following query:
+
+
+SELECT E.Fname, E.Lname
+FROM EMPLOYEE E
+WHERE E.Dno = (
+    SELECT D.Dnumber
+    FROM DEPARTMENT D
+    WHERE D.Locations = 'Houston'
+) AND E.Job = 'Manager';
+
+-- p) To find the name and salaries of the employees who have a female dependent (nested query), you can use the following query:
+
+
+SELECT E.Fname, E.Lname, E.Salary
+FROM EMPLOYEE E
+WHERE EXISTS (
+    SELECT *
+    FROM DEPENDENT D
+    WHERE D.Essn = E.Ssn AND D.Dependent_sex = 'F'
+);
+
+-- q) To find the names and salaries of the employees who have a dependent of the same gender as the employee (co-related query), you can use the following query:
+
+
+SELECT E.Fname, E.Lname, E.Salary
+FROM EMPLOYEE E
+WHERE EXISTS (
+    SELECT *
+    FROM DEPENDENT D
+    WHERE D.Essn = E.Ssn AND D.Dependent_sex = E.Sex
+);
+
+-- r) To list the average salary of the female employees, you can use the following query:
+
+SELECT AVG(Salary) AS AverageSalary
+FROM EMPLOYEE
+WHERE Sex = 'F';
+-- s) To list the names, sex, and salary of the employees who earn more than the average salary of the female employees, you can use the following query:
+
+SELECT Fname, Lname, Sex, Salary
+FROM EMPLOYEE
+WHERE Salary > (
+    SELECT AVG(Salary)
+    FROM EMPLOYEE
+    WHERE Sex = 'F'
+);
+
+
+
+-- t) For each department, to list the department name and the average salary of the employees working in that department, you can use the following query:
+
+SELECT D.Dname AS DepartmentName, AVG(E.Salary) AS AverageSalary
+FROM DEPARTMENT D
+JOIN EMPLOYEE E ON D.Dnumber = E.Dno
+GROUP BY D.Dname;
+
+-- u) To list the names of the employees who do not have any dependents, you can use the following query:
+
+SELECT Fname, Lname
+FROM EMPLOYEE
+WHERE Ssn NOT IN (SELECT Essn FROM DEPENDENT);
+
+-- v) To list the names and salaries of the employees along with the total number of hours they have spent on all projects, you can use the following query:
+
+SELECT E.Fname, E.Lname, E.Salary, SUM(W.Hours) AS TotalHours
+FROM EMPLOYEE E
+JOIN WORKS_ON W ON E.Ssn = W.Essn
+GROUP BY E.Fname, E.Lname, E.Salary;
+
+-- w) To list the names and salaries of the employees along with the total number of hours spent on projects if they have spent less than 20 hours total, you can use the following query:
+
+SELECT E.Fname, E.Lname, E.Salary, SUM(W.Hours) AS TotalHours
+FROM EMPLOYEE E
+JOIN WORKS_ON W ON E.Ssn = W.Essn
+GROUP BY E.Fname, E.Lname, E.Salary
+HAVING TotalHours < 20;
+
+
+-- x) To list the names and salaries of all the employees who have at least 2 dependents, you can use the following query:
+
+SELECT E.Fname, E.Lname, E.Salary
+FROM EMPLOYEE E
+WHERE (
+    SELECT COUNT(*)
+    FROM DEPENDENT D
+    WHERE D.Essn = E.Ssn
+) >= 2;
+
+-- y) To list the names of managers who have at least 1 dependent, you can use the following query:
+
+SELECT E.Fname, E.Lname
+FROM EMPLOYEE E
+JOIN DEPARTMENT D ON E.Ssn = D.Mgr_ssn
+WHERE EXISTS (
+    SELECT *
+    FROM DEPENDENT DEP
+    WHERE DEP.Essn = E.Ssn
+);
+
+-- z) To list the names and salaries of all the employees along with the total number of their dependents (showing data for all employees even if they do not have any dependents), you can use the following query:
+
+
+SELECT E.Fname, E.Lname, E.Salary, COUNT(D.Essn) AS TotalDependents
+FROM EMPLOYEE E
+LEFT JOIN DEPENDENT D ON E.Ssn = D.Essn
+GROUP BY E.Fname, E.Lname, E.Salary;
+
